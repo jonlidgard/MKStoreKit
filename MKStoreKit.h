@@ -136,6 +136,15 @@ extern NSString *const kMKStoreKitSubscriptionExpiredNotification;
 + (MKStoreKit *)sharedKit;
 
 /*!
+ *  @abstract Reset (delete) the local purchase record
+ *
+ *  @discussion
+ *	This class method allows you to test your code by deleting the locally held
+ *  purchase record without having to delete the whole app.
+ */
+ + (void)resetPurchaseRecord;
+
+/*!
  *  @abstract Initializes MKStoreKit singleton by making the product request using StoreKit's SKProductRequest
  *
  *  @discussion
@@ -269,8 +278,6 @@ extern NSString *const kMKStoreKitSubscriptionExpiredNotification;
  *  -isProductPurchased
  */
 - (void)setDefaultCredits:(NSNumber *)creditCount forConsumableIdentifier:(NSString *)consumableId;
-
-+ (void)resetPurchaseRecord;
 
 
 
