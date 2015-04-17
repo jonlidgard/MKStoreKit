@@ -1,5 +1,10 @@
 #MKStoreKit
 
+Added a resetPurchaseRecord class method [MKStorekit resetPurchaseRecord]
+Use this before initialization during testing to wipe the local purchase record.
+
+Also fixed crash when retrieving expiryDate for subscription with no expiryDate set.
+
 An in-App Purchase framework for iOS 7.0+. **MKStoreKit** makes in-App Purchasing super simple by remembering your purchases, validating reciepts, and tracking virtual currencies (consumable purchases). Additionally, it keeps track of auto-renewable subscriptions and their expirationd dates. It couldn't be easier!
 
 ## Compatibility

@@ -270,5 +270,8 @@ extern NSString *const kMKStoreKitSubscriptionExpiredNotification;
  */
 - (void)setDefaultCredits:(NSNumber *)creditCount forConsumableIdentifier:(NSString *)consumableId;
 
++ (void)resetPurchaseRecord;
+
+
 
 @end

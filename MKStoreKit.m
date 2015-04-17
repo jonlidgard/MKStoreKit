@@ -122,13 +122,13 @@ static NSDictionary *errorDictionary;
 #pragma mark -
 #pragma mark Store File Management
 
-- (NSString *)purchaseRecordFilePath {
++ (NSString *)purchaseRecordFilePath {
   NSString *documentDirectory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
   return [documentDirectory stringByAppendingPathComponent:@"purchaserecord.plist"];
 }
 
 - (void)restorePurchaseRecord {
-  self.purchaseRecord = (NSMutableDictionary *)[[NSKeyedUnarchiver unarchiveObjectWithFile:[self purchaseRecordFilePath]] mutableCopy];
+  self.purchaseRecord = (NSMutableDictionary *)[[NSKeyedUnarchiver unarchiveObjectWithFile:[MKStoreKit purchaseRecordFilePath]] mutableCopy];
   if (self.purchaseRecord == nil) {
     self.purchaseRecord = [NSMutableDictionary dictionary];
   }
@@ -138,7 +138,7 @@ static NSDictionary *errorDictionary;
   NSError *error = nil;
   NSData *data = [NSKeyedArchiver archivedDataWithRootObject:self.purchaseRecord];
 #if TARGET_OS_IPHONE
-  BOOL success = [data writeToFile:[self purchaseRecordFilePath] options:NSDataWritingAtomic | NSDataWritingFileProtectionComplete error:&error];
+  BOOL success = [data writeToFile:[MKStoreKit purchaseRecordFilePath] options:NSDataWritingAtomic | NSDataWritingFileProtectionComplete error:&error];
 #elif TARGET_OS_MAC
   BOOL success = [data writeToFile:[self purchaseRecordFilePath] options:NSDataWritingAtomic error:&error];
 #endif
@@ -148,6 +148,15 @@ static NSDictionary *errorDictionary;
   }
   
   NSLog(@"%@", self.purchaseRecord);
+}
+
++ (void)resetPurchaseRecord {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSError *error;
+    BOOL success = [fileManager removeItemAtPath:[self purchaseRecordFilePath] error:&error];
+    if (!success) {
+        NSLog(@"Failed to delete purchase record");
+    }
 }
 
 #pragma mark -
@@ -160,7 +169,11 @@ static NSDictionary *errorDictionary;
 -(NSDate*) expiryDateForProduct:(NSString*) productId {
   
   NSNumber *expiresDateMs = self.purchaseRecord[productId];
-  return [NSDate dateWithTimeIntervalSince1970:[expiresDateMs doubleValue] / 1000.0f];
+  NSDate *expiryDate;
+  if (expiresDateMs && ![expiresDateMs isKindOfClass:[NSNull class]]) {
+    expiryDate = [NSDate dateWithTimeIntervalSince1970:[expiresDateMs doubleValue] / 1000.0f];
+  }
+  return expiryDate;
 }
 
 - (NSNumber *)availableCreditsForConsumable:(NSString *)consumableId {
